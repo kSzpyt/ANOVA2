@@ -104,11 +104,23 @@ TukeyHSD(fit)
 
 
 #efekty eksperymentalne
-eta_sq(fit)
+eta_sq(fit)[,2]
 
 eta_sq(fit, partial = TRUE)
 
 omega_sq(fit)
 
+ee <- data.frame(eta_sq(fit)[,2], eta_sq(fit, partial = TRUE)[,2], omega_sq(fit)[,2])
+names(ee) <- c("eta kwadrat", "cząstkowe eta kwadrat", "omega kwadrat")
+rownames(ee) <- eta_sq(fit)[,1]
+ee
 
+
+
+
+
+
+
+
+describeBy(BWT, RACE)
 describeBy(BWT, list(SMOKE, RACE))

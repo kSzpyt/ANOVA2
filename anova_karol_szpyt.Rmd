@@ -59,7 +59,7 @@ hist(UI, breaks = 2)
 hist(FTV, breaks = 6)
 ```
 
-W analizie jako zmienna zależna użyta zosstanie zmienna **BWT**, czyli waga urodzonego dziecka (w gramach). Jako czynniki zostaną użyte zmienne **RACE** oraz **SMOKE**. Zostały one wybrany po oględzienach danyh (hisotrgamy oraz boxplot'y). Pozostałe potencjalne czynniki ze względu na drastyczne różnice w liczebności poszczególnych grup.
+W analizie jako zmienna zależna użyta zosstanie zmienna **BWT**, czyli waga urodzonego dziecka (w gramach). Jako czynniki zostaną użyte zmienne **RACE** oraz **SMOKE**. Zostały one wybrany po oględzienach danyh (hisotrgamy oraz boxplot'y). Pozostałe potencjalne czynniki ze względu na drastyczne różnice w liczebności poszczególnych grup zostały subiektywnie odrzucone.
 ```{r include=FALSE}
 data$RACE <- as.factor(data$RACE)
 data$SMOKE <- as.factor(data$SMOKE)
@@ -124,7 +124,7 @@ fit_s <- summary(fit)
 aov(BWT ~ RACE * SMOKE, data)
 summary(fit)
 ```
-Jak widać fakt czy matka palia czy nie bardzo istitonie wpływa na wagę dziecka po urodzeniu. Nieco mniej ale dalej isitonie (na poziomie 5%) na wagę dzieka wpływa rasa matki. Interakcja czynników RACE oraz SMOKE nie ma istotnego wpływu na wagę.  
+Jak widać fakt czy matka palia czy nie bardzo istotnie wpływa na wagę dziecka po urodzeniu. Nieco mniej ale dalej isitonie (na poziomie 5%) na wagę dzieka wpływa rasa matki. Interakcja czynników RACE oraz SMOKE nie ma istotnego wpływu na wagę. Oznacza to, że średnie wartości, w któryś podgrupach w interakcji nie będą się różnić. Coś również może się dziać przy podziale na rasy. Wszytko wyjaśni test Tukey'a.
 
 ###Efekt interakcji
 ```{r echo=FALSE, fig.align = "center"}
@@ -136,6 +136,18 @@ Z wykresu nie wynika, aby zachodził efekt interakcji.
 ```{r echo=FALSE}
 TukeyHSD(fit)
 ``` 
+Jak widać średnie wieloktnych podgrup nie różnią się istotnie od siebie.
+Tak jak było przypuszczane, również w podziale na rase widać teraz dokładnie, że waga dziecka od czarnych oraz innych matek jest średnio taka sama. Można się było tego spodziewać po obejrzeniu danych na boxplot'ach.  
 
+###Efekty eksperymentalne
+```{r echo=FALSE}
+ee <- data.frame(eta_sq(fit)[,2], eta_sq(fit, partial = TRUE)[,2], omega_sq(fit)[,2])
+names(ee) <- c("eta kwadrat", "cząstkowe eta kwadrat", "omega kwadrat")
+rownames(ee) <- eta_sq(fit)[,1]
+
+ee %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("stripped", "bordered"))
+```
 
 
