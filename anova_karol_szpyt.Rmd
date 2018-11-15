@@ -59,7 +59,8 @@ hist(UI, breaks = 2)
 hist(FTV, breaks = 6)
 ```
 
-W analizie jako zmienna zależna użyta zosstanie zmienna **BWT**, czyli waga urodzonego dziecka (w gramach). Jako czynniki zostaną użyte zmienne **RACE** oraz **SMOKE**. Zostały one wybrany po oględzienach danyh (hisotrgamy oraz boxplot'y). Pozostałe potencjalne czynniki ze względu na drastyczne różnice w liczebności poszczególnych grup zostały subiektywnie odrzucone.
+W analizie jako zmienna zależna użyta zosstanie zmienna **BWT**, czyli waga urodzonego dziecka (w gramach). Jako czynniki zostaną użyte zmienne **RACE** oraz **SMOKE**. Zostały one wybrany po oględzienach danyh (hisotrgamy oraz boxplot'y). Pozostałe potencjalne czynniki ze względu na drastyczne różnice w liczebności poszczególnych grup zostały subiektywnie odrzucone.  
+Spodziewać się można, że fakt czy matka w ciązy pali czy nie będzie miał statystycznie istotny wpływ na wagę dziecka. Co do rasy, nie byłby zaskoczeniem jeżeli wpływ będzie zer-jedynkowy, tj. na wagę wpływać będzie czy dziecko jest białej matki czy czarnej/innej.
 ```{r include=FALSE}
 data$RACE <- as.factor(data$RACE)
 data$SMOKE <- as.factor(data$SMOKE)
@@ -149,5 +150,5 @@ ee %>%
   kable() %>%
   kable_styling(bootstrap_options = c("stripped", "bordered"))
 ```
-
+Wszystkie efekty są na bardzo niskim poziomie- nie przekraczają one 8%.
 
