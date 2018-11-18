@@ -97,13 +97,14 @@ norm_rs_sw %>%
   kable() %>%
   kable_styling(bootstrap_options = c("stripped", "bordered"), full_width = FALSE, position = "left")
 ```
-Test Shapiro-Wilka wskazuje na problemy z normalnością rozkładu wśród wagi dzieci niepalących białych kobiet oraz palących "innych" kobiet (p-value < 0.05).
+Test Shapiro-Wilka wskazuje na problemy z normalnością rozkładu wśród wagi dzieci niepalących białych kobiet oraz palących "innych" kobiet (p-value < 0.05). Jendakże są to bniewielkie odchylenia (na poziomie istotności 1% można by przyjąć, że rozkłady są normalne) na co ANOVA jest w miarę odporna
 
 ###Analiza wariancji  
 Test Bartelta.
 ```{r echo=FALSE}
 bartlett.test(split(BWT, list(RACE, SMOKE)))
-``` 
+```  
+Test Bartleta nie wykazał istotnych różnic pomiędzy wariancjami w grupach oraz podgrupach. Jednakże w dwóch podgrupach kwestia normalności rozkładu nie jest do końća jasna dlatego wykonany zostanie również test Levene'a.  
 test Levene'a
 ```{r echo=FALSE}
 leveneTest(BWT~RACE*SMOKE, data = data)
@@ -145,7 +146,7 @@ ee %>%
   kable() %>%
   kable_styling(bootstrap_options = c("stripped", "bordered"))
 ```
-Wszystkie efekty są na bardzo niskim poziomie- nie przekraczają one 8%.
+Efekty eta odnoszą się do próby a omega odnosi się do populacji. Wszystkie efekty są na bardzo niskim poziomie- nie przekraczają one 8%. Oznacza to, że model słabo wyjaśnia zmienną zależną.  
 
 ###Podsumowanie  
 Test Tukey'a rozwiał wszelkie wątpliwości i potwierdził prawdziwość stwierdzeń w hipotezie. Wykazano, że fakt czy matka pali czy nie istotnie wpływa na wagę dziecka. Tak jak było powiedziane na początku sprawdziło się też stwierdzenie, że podział na rasy będzie traktowany zero jedynkowo tj biali - czarni/inni. Występują istotne różnice właśnie między tymi dwoma grupami, podczas gdy grupa czarni-inni nie różni się istotnie. Można również zaobserwować, że jedyną podgrupą istotnie różniącą się od pozostałych jest podgrupa "biali niepalący".
