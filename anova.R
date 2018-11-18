@@ -17,7 +17,6 @@ library(sjstats)
 
 
 data <- read_xls("urodzenia.xls")
-View(data)
 summary(data) 
 attach(data)
 #normalność rozkłądu zmiennej zależnej
@@ -70,6 +69,8 @@ mean(b < 0.05)
 library(psych)
 #describeBy(BWT, RACE)
 describeBy(BWT, FTV)
+data$RACE <- as.factor(data$RACE)
+data$SMOKE <- as.factor(data$SMOKE)
 
 
 bartlett.test(BWT ~ RACE)
@@ -78,7 +79,9 @@ bartlett.test(split(BWT, list(RACE, SMOKE)))
 
 leveneTest(BWT, as.factor(RACE))
 leveneTest(BWT, as.factor(SMOKE))
-leveneTest(BWT ~ RACE*SMOKE)
+leveneTest(BWT ~ RACE*SMOKE, data = data)
+
+leveneTest(BWT~RACE*SMOKE, data = data)
 #oba testy nie wskazują aby wariancje w grupach były istotnie 
 
 data$RACE <- as.factor(data$RACE)

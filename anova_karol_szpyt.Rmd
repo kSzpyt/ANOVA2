@@ -60,7 +60,10 @@ hist(FTV, breaks = 6)
 ```
 
 W analizie jako zmienna zależna użyta zosstanie zmienna **BWT**, czyli waga urodzonego dziecka (w gramach). Jako czynniki zostaną użyte zmienne **RACE** oraz **SMOKE**. Zostały one wybrany po oględzienach danyh (hisotrgamy oraz boxplot'y). Pozostałe potencjalne czynniki ze względu na drastyczne różnice w liczebności poszczególnych grup zostały subiektywnie odrzucone.  
-Spodziewać się można, że fakt czy matka w ciązy pali czy nie będzie miał statystycznie istotny wpływ na wagę dziecka. Co do rasy, nie byłby zaskoczeniem jeżeli wpływ będzie zer-jedynkowy, tj. na wagę wpływać będzie czy dziecko jest białej matki czy czarnej/innej.
+  
+###Hipoteza  
+
+Spodziewać się można, że fakt czy matka w ciązy pali czy nie będzie miał statystycznie istotny wpływ na wagę dziecka. Co do rasy, nie byłoby zaskoczeniem jeżeli wpływ będzie zer-jedynkowy, tj. na wagę wpływać będzie czy dziecko jest białej matki czy czarnej/innej.
 ```{r include=FALSE}
 data$RACE <- as.factor(data$RACE)
 data$SMOKE <- as.factor(data$SMOKE)
@@ -86,7 +89,7 @@ Poniższy kod sprawdza normalność w podgrupach .
 ```{r echo=TRUE}
 norm_rs_sw <- data %>%
   group_by(SMOKE, RACE) %>%
-  summarise(pValue = shapiro.test(BWT)$p.value)
+  summarise(p_value = shapiro.test(BWT)$p.value)
 ```
 
 ```{r echo=FALSE}
@@ -94,14 +97,19 @@ norm_rs_sw %>%
   kable() %>%
   kable_styling(bootstrap_options = c("stripped", "bordered"), full_width = FALSE, position = "left")
 ```
-Test Shapiro-Wilka wskazuje na problemy z normalnością rozkładu wśród wagi dzieci niepalących białych kobiet oraz palących "innych" kobiet.
+Test Shapiro-Wilka wskazuje na problemy z normalnością rozkładu wśród wagi dzieci niepalących białych kobiet oraz palących "innych" kobiet (p-value < 0.05).
 
 ###Analiza wariancji  
-Wykonany zostanie test Bartelta.
+Test Bartelta.
 ```{r echo=FALSE}
 bartlett.test(split(BWT, list(RACE, SMOKE)))
 ``` 
-Jak widać nie ma podstaw do odrzucenia hipotezy zerowej, tzn że wariancje w grupach są statystycznie różne.  
+test Levene'a
+```{r echo=FALSE}
+leveneTest(BWT~RACE*SMOKE, data = data)
+```
+
+Oba testy nie wykazują podstaw do odrzucenia hipotezy zerowej, tzn że wariancje w grupach nie są statystycznie różne.  
 
 ###ANOVA
 ```{r include=FALSE}
@@ -124,7 +132,7 @@ Z wykresu nie wynika, aby zachodził efekt interakcji.
 ```{r echo=FALSE}
 TukeyHSD(fit)
 ``` 
-Jak widać średnie wielokrtnych podgrup nie różnią się istotnie od siebie.
+Jak widać średnie wielokrotnych **podgrup** nie różnią się istotnie od siebie. Co więcej można zauważyć, że podgrupa 1-0 tj. "biali niepalący" jako jedyna różni się istotnie od każdej z pozostałych podgrup.  
 Tak jak było przypuszczane, również w podziale na rase widać teraz dokładnie, że waga dziecka od czarnych oraz innych matek jest średnio taka sama. Można się było tego spodziewać po obejrzeniu danych na boxplot'ach.  
 
 ###Efekty eksperymentalne
@@ -139,3 +147,5 @@ ee %>%
 ```
 Wszystkie efekty są na bardzo niskim poziomie- nie przekraczają one 8%.
 
+###Podsumowanie  
+Test Tukey'a rozwiał wszelkie wątpliwości i potwierdził prawdziwość stwierdzeń w hipotezie. Wykazano, że fakt czy matka pali czy nie istotnie wpływa na wagę dziecka. Tak jak było powiedziane na początku sprawdziło się też stwierdzenie, że podział na rasy będzie traktowany zero jedynkowo tj biali - czarni/inni. Występują istotne różnice właśnie między tymi dwoma grupami, podczas gdy grupa czarni-inni nie różni się istotnie. Można również zaobserwować, że jedyną podgrupą istotnie różniącą się od pozostałych jest podgrupa "biali niepalący".
