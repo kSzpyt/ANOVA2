@@ -67,54 +67,41 @@ data$SMOKE <- as.factor(data$SMOKE)
 ```
 
 ###Sprawdzanie normalności rozkładu w grupach oraz podgrupach  
+Użyty zostanie test Shapiro-Wilka.  
 Poniższa pętla liczy normalność w grupach (poziom istotności = 5%)
 ```{r}
 norm_race <- NULL
 norm_smoke <- NULL
 for (x in 1:3) {
   norm_race[x] <- shapiro.test(data$BWT[which(data$RACE == x)])$p.value
-  norm_race[x+3] <- jarque.bera.test(data$BWT[which(data$RACE == x)])$p.value
   if(x < 3)
   {
     norm_smoke[x] <- shapiro.test(data$BWT[which(data$SMOKE == x - 1)])$p.value
-    norm_smoke[x+2] <- jarque.bera.test((data$BWT[which(data$SMOKE == x - 1)]))$p.value
   }
 }
 mean(c(norm_race, norm_smoke) < 0.05)
 ```
 Wynik **0** oznacza, że każda z grup (waga dziecka od palących, niepalących, białych, czarnych, innych matek) ma rozkład normalny.  
 Poniższy kod sprawdza normalność w podgrupach .
-```{r}
+```{r echo=TRUE}
 norm_rs_sw <- data %>%
   group_by(SMOKE, RACE) %>%
   summarise(pValue = shapiro.test(BWT)$p.value)
-
-norm_rs_jw <- data %>%
-  group_by(SMOKE, RACE) %>%
-  summarise(pValue = jarque.bera.test(BWT)$p.value)
 ```
 
 ```{r echo=FALSE}
 norm_rs_sw %>%
   kable() %>%
-  kable_styling(bootstrap_options = c("stripped", "bordered"), full_width = FALSE, position = "float_left")
-
-norm_rs_jw %>%
-  kable() %>%
-  kable_styling(bootstrap_options = c("stripped", "bordered"), full_width = FALSE)
+  kable_styling(bootstrap_options = c("stripped", "bordered"), full_width = FALSE, position = "left")
 ```
 Test Shapiro-Wilka wskazuje na problemy z normalnością rozkładu wśród wagi dzieci niepalących białych kobiet oraz palących "innych" kobiet.
 
 ###Analiza wariancji  
-Wykonywane zostają dwa testy: Bartelta oraz Levena
+Wykonany zostanie test Bartelta.
 ```{r echo=FALSE}
-bartlett.test(BWT ~ RACE)
-bartlett.test(BWT ~ SMOKE)
-
-leveneTest(BWT, as.factor(RACE))
-leveneTest(BWT, as.factor(SMOKE))
+bartlett.test(split(BWT, list(RACE, SMOKE)))
 ``` 
-Jak widać w żadnym z wypadków nie ma podstaw do odrzucenia hipotezy zerowej, tzn że wariancje w grupach są statystycznie różne.  
+Jak widać nie ma podstaw do odrzucenia hipotezy zerowej, tzn że wariancje w grupach są statystycznie różne.  
 
 ###ANOVA
 ```{r include=FALSE}
@@ -137,7 +124,7 @@ Z wykresu nie wynika, aby zachodził efekt interakcji.
 ```{r echo=FALSE}
 TukeyHSD(fit)
 ``` 
-Jak widać średnie wieloktnych podgrup nie różnią się istotnie od siebie.
+Jak widać średnie wielokrtnych podgrup nie różnią się istotnie od siebie.
 Tak jak było przypuszczane, również w podziale na rase widać teraz dokładnie, że waga dziecka od czarnych oraz innych matek jest średnio taka sama. Można się było tego spodziewać po obejrzeniu danych na boxplot'ach.  
 
 ###Efekty eksperymentalne

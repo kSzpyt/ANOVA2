@@ -74,9 +74,11 @@ describeBy(BWT, FTV)
 
 bartlett.test(BWT ~ RACE)
 bartlett.test(BWT ~ SMOKE)
+bartlett.test(split(BWT, list(RACE, SMOKE)))
 
 leveneTest(BWT, as.factor(RACE))
 leveneTest(BWT, as.factor(SMOKE))
+leveneTest(BWT ~ RACE*SMOKE)
 #oba testy nie wskazują aby wariancje w grupach były istotnie 
 
 data$RACE <- as.factor(data$RACE)
